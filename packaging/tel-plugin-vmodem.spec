@@ -1,9 +1,13 @@
+%define major 0
+%define minor 1
+%define patchlevel 18
+
 Name:       tel-plugin-vmodem
 Summary:    Telephony AT Virtual Modem library
-Version:    0.1.8
+Version:    %{major}.%{minor}.%{patchlevel}
 Release:    1
 Group:      System/Libraries
-License:    Apache-2.0
+License:    Apache
 Source0:    tel-plugin-vmodem-%{version}.tar.gz
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
@@ -19,7 +23,8 @@ Telephony AT Modem library
 %setup -q
 
 %build
-%cmake .
+versionint=$[%{major} * 1000000 + %{minor} * 1000 + %{patchlevel}]
+cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} -DVERSION=$versionint
 make %{?jobs:-j%jobs}
 
 %post
@@ -28,12 +33,13 @@ make %{?jobs:-j%jobs}
 %postun -p /sbin/ldconfig
 
 %install
+rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/share/license
-cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %files
 %manifest tel-plugin-vmodem.manifest
 %defattr(-,root,root,-)
+#%doc COPYING
 %{_libdir}/telephony/plugins/vmodem-plugin*
-/usr/share/license/%{name}
+/usr/share/license/tel-plugin-vmodem

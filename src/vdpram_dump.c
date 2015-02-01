@@ -25,19 +25,19 @@
 
 #include "vdpram_dump.h"
 
-static void hex_dump(char *pad, int size, const void *data)
+static void hex_dump(const char *pad, int size, const void *data)
 {
 	char buf[255] = {0, };
 	char hex[4] = {0, };
 	int i;
-	unsigned char *p;
+	unsigned const char *p;
 
 	if (size <= 0) {
 		msg("%sno data", pad);
 		return;
 	}
 
-	p = (unsigned char *)data;
+	p = (unsigned const char *)data;
 
 	snprintf(buf, 255, "%s%04X: ", pad, 0);
 	for (i = 0; i<size; i++) {
@@ -61,20 +61,19 @@ static void hex_dump(char *pad, int size, const void *data)
 
 void vdpram_hex_dump(int dir, unsigned short data_len, void *data)
 {
-	char *d;
+	const char *d;
 
 	if(!data)
 		return;
 
-	if (dir == RX)
+	if (dir == IPC_RX)
 		d = "[RX]";
 	else
 		d = "[TX]";
 
 	msg("");
 	msg("  %s\tlen=%d\t%s", d, data_len, (char *)data);
-	hex_dump("        ", data_len, data);
+	hex_dump("        ", data_len, (const void*)data);
 
 	msg("");
 }
-
