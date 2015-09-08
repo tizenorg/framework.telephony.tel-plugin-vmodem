@@ -1,17 +1,26 @@
-#sbs-git:slp/pkgs/t/tel-plugin-vmodem
-Name:       tel-plugin-vmodem
-Summary:    Telephony AT Virtual Modem library
-Version: 0.1.6
-Release:    1
-Group:      System/Libraries
-License:    Apache
-Source0:    tel-plugin-vmodem-%{version}.tar.gz
-Requires(post): /sbin/ldconfig
-Requires(postun): /sbin/ldconfig
+%define major 0
+%define minor 1
+%define patchlevel 20
+
+Name:           tel-plugin-vmodem
+Version:        %{major}.%{minor}.%{patchlevel}
+Release:        1
+License:        Apache-2.0
+Summary:        Telephony AT Virtual Modem library
+Group:          System/Libraries
+Source0:        tel-plugin-vmodem-%{version}.tar.gz
+
+%if "%{_repository}" == "emulator" || "%{_repository}" == "emulator-circle"
+%else
+ExcludeArch: %{arm} %ix86 x86_64
+%endif
+
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(tcore)
+Requires(post): /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
 
 %description
 Telephony AT Modem library
@@ -20,8 +29,9 @@ Telephony AT Modem library
 %setup -q
 
 %build
-cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix}
-make %{?jobs:-j%jobs}
+versionint=$[%{major} * 1000000 + %{minor} * 1000 + %{patchlevel}]
+cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} -DVERSION=$versionint
+make %{?_smp_mflags}
 
 %post
 /sbin/ldconfig
@@ -29,10 +39,12 @@ make %{?jobs:-j%jobs}
 %postun -p /sbin/ldconfig
 
 %install
-rm -rf %{buildroot}
 %make_install
+mkdir -p %{buildroot}/usr/share/license
 
 %files
+%manifest tel-plugin-vmodem.manifest
 %defattr(-,root,root,-)
 #%doc COPYING
 %{_libdir}/telephony/plugins/vmodem-plugin*
+/usr/share/license/tel-plugin-vmodem

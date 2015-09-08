@@ -25,24 +25,26 @@
 
 #include "vdpram_dump.h"
 
-static void hex_dump(char *pad, int size, const void *data)
+#define TAB_SPACE	"  "
+
+static void hex_dump(const char *pad, int size, const void *data)
 {
 	char buf[255] = {0, };
 	char hex[4] = {0, };
 	int i;
-	unsigned char *p;
+	unsigned const char *p;
 
 	if (size <= 0) {
 		msg("%sno data", pad);
 		return;
 	}
 
-	p = (unsigned char *)data;
+	p = (unsigned const char *)data;
 
 	snprintf(buf, 255, "%s%04X: ", pad, 0);
 	for (i = 0; i<size; i++) {
 		snprintf(hex, 4, "%02X ", p[i]);
-		strcat(buf, hex);
+		strncat(buf, hex, strlen(hex));
 
 		if ((i + 1) % 8 == 0) {
 			if ((i + 1) % 16 == 0) {
@@ -51,7 +53,7 @@ static void hex_dump(char *pad, int size, const void *data)
 				snprintf(buf, 255, "%s%04X: ", pad, i + 1);
 			}
 			else {
-				strcat(buf, "  ");
+				strncat(buf, TAB_SPACE, strlen(TAB_SPACE));
 			}
 		}
 	}
@@ -61,7 +63,7 @@ static void hex_dump(char *pad, int size, const void *data)
 
 void vdpram_hex_dump(int dir, unsigned short data_len, void *data)
 {
-	char *d;
+	const char *d;
 
 	if(!data)
 		return;
@@ -73,8 +75,7 @@ void vdpram_hex_dump(int dir, unsigned short data_len, void *data)
 
 	msg("");
 	msg("  %s\tlen=%d\t%s", d, data_len, (char *)data);
-	hex_dump("        ", data_len, data);
+	hex_dump("        ", data_len, (const void*)data);
 
 	msg("");
 }
-

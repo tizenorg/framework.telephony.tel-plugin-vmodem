@@ -61,7 +61,7 @@ typedef struct _tty_old_setting_t{
 	struct	_tty_old_setting_t *prev;
 } tty_old_setting_t;
 
-#define VDPRAM_OPEN_PATH		"/dev/dpram/0"
+#define VDPRAM_OPEN_PATH		"/dev/vdpram0"
 
 /* DPRAM ioctls for DPRAM tty devices */
 #define IOC_MZ_MAGIC		('h')
@@ -175,7 +175,10 @@ static int __tty_setrts(int fd)
 /*
  * Set baudrate, parity and number of bits.
  */
-static int __tty_setparms(int fd, char* baudr, char* par, char* bits, char* stop, int hwf, int swf)
+static int __tty_setparms(int fd,
+	const char* baudr, const char* par,
+	const char* bits, const char* stop,
+	int hwf, int swf)
 {
 	int spd = -1;
 	int newbaud;

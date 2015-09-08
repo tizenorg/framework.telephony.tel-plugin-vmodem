@@ -1,5 +1,5 @@
 /*
- * libslp-tapi
+ * tel-plugin-vmodem
  *
  * Copyright (c) 2011 Samsung Electronics Co., Ltd. All rights reserved.
  *
