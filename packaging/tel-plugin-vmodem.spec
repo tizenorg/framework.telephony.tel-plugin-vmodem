@@ -1,6 +1,6 @@
 %define major 0
 %define minor 1
-%define patchlevel 20
+%define patchlevel 22
 
 Name:           tel-plugin-vmodem
 Version:        %{major}.%{minor}.%{patchlevel}
@@ -10,8 +10,11 @@ Summary:        Telephony AT Virtual Modem library
 Group:          System/Libraries
 Source0:        tel-plugin-vmodem-%{version}.tar.gz
 
-%if "%{_repository}" == "emulator" || "%{_repository}" == "emulator-circle"
-%else
+%if "%{_repository}" != "emulator"
+ExcludeArch: %{arm} %ix86 x86_64
+%endif
+
+%if "%{?tizen_profile_name}" == "tv"
 ExcludeArch: %{arm} %ix86 x86_64
 %endif
 
@@ -44,7 +47,7 @@ mkdir -p %{buildroot}/usr/share/license
 
 %files
 %manifest tel-plugin-vmodem.manifest
-%defattr(-,root,root,-)
+%defattr(644,system,system,-)
 #%doc COPYING
 %{_libdir}/telephony/plugins/vmodem-plugin*
 /usr/share/license/tel-plugin-vmodem

@@ -42,7 +42,7 @@ static void hex_dump(const char *pad, int size, const void *data)
 	p = (unsigned const char *)data;
 
 	snprintf(buf, 255, "%s%04X: ", pad, 0);
-	for (i = 0; i<size; i++) {
+	for (i = 0; i < size; i++) {
 		snprintf(hex, 4, "%02X ", p[i]);
 		strncat(buf, hex, strlen(hex));
 
@@ -51,8 +51,7 @@ static void hex_dump(const char *pad, int size, const void *data)
 				msg("%s", buf);
 				memset(buf, 0, 255);
 				snprintf(buf, 255, "%s%04X: ", pad, i + 1);
-			}
-			else {
+			} else {
 				strncat(buf, TAB_SPACE, strlen(TAB_SPACE));
 			}
 		}
@@ -65,7 +64,7 @@ void vdpram_hex_dump(int dir, unsigned short data_len, void *data)
 {
 	const char *d;
 
-	if(!data)
+	if (!data)
 		return;
 
 	if (dir == IPC_RX)
@@ -75,7 +74,7 @@ void vdpram_hex_dump(int dir, unsigned short data_len, void *data)
 
 	msg("");
 	msg("  %s\tlen=%d\t%s", d, data_len, (char *)data);
-	hex_dump("        ", data_len, (const void*)data);
+	hex_dump("        ", data_len, (const void *)data);
 
 	msg("");
 }
